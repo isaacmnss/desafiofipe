@@ -2,6 +2,9 @@ package br.com.alura.desafiofipe.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+
+import java.util.List;
 
 public class ConverteDadosService implements ConverteDadosInterface{
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -11,6 +14,17 @@ public class ConverteDadosService implements ConverteDadosInterface{
         try {
             return objectMapper.readValue(json, classe);
         }catch (JsonProcessingException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public <T> List<T> obterLista(String json, Class<T> classe) {
+        CollectionType lista = objectMapper.getTypeFactory()
+                .constructCollectionType(List.class, classe);
+        try {
+            return objectMapper.readValue(json, lista);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
